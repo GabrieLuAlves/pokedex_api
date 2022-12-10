@@ -1,4 +1,6 @@
-import express, { Request, Response } from 'express';
+import "@database/datasource";
+
+import express, { Request, Response } from "express";
 
 const app = express()
 

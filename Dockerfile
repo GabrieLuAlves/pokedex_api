@@ -1,0 +1,7 @@
+FROM postgres
+
+ENV POSTGRES_USER pokemon_api
+ENV POSTGRES_DB pokemon_api
+ENV POSTGRES_PASSWORD bestpassword
+
+EXPOSE 5432
