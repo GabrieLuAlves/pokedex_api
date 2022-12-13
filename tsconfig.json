@@ -5,14 +5,10 @@
         "emitDecoratorMetadata": true,
         "module": "commonjs",
         "baseUrl": "src",
-        "paths": {
-            "@database/*": [
-                "database/*"
-            ]
-        },
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "strict": true,
     }
 }
