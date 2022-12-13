@@ -11,15 +11,13 @@ class PokemonTypeRepositoryTypeorm implements IPokemonTypeRepository{
   }
 
   async doesTheseTypesExist(typesIds: number[]): Promise<boolean[]> {
-    const pokemon_types = await this.pokemonTypeRepository
+    const pokemonType = await this.pokemonTypeRepository
         .createQueryBuilder()
         .getMany();
-
-    const results = typesIds.map(
-      typeId => pokemon_types.find(pokemon_type => pokemon_type.id == typeId) !== undefined
-    );
     
-    return results;
+    const pokemonTypesIds = pokemonType.map(p => p.id);
+
+    return typesIds.map(typeId => pokemonTypesIds.includes(typeId));
   }
 
   async findAll(): Promise<PokemonType[]> {

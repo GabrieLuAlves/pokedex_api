@@ -1,5 +1,6 @@
 import { Pokemon } from "entities/Pokemon";
 import { AppError } from "errors/AppError";
+import { IEggGroupRepository } from "repositories/IEggGroupRepository";
 import { IPokemonRepository } from "repositories/IPokemonRepository";
 import { IPokemonTypeRepository } from "repositories/IPokemonTypeRepository";
 import { inject, injectable } from "tsyringe";
@@ -11,16 +12,28 @@ class FindPokemonService {
     private pokemonRepository: IPokemonRepository,
 
     @inject("PokemonTypeRepository")
-    private pokemonTypeRepository: IPokemonTypeRepository
+    private pokemonTypeRepository: IPokemonTypeRepository,
+
+    @inject("EggGroupRepository")
+    private eggGroupRepository: IEggGroupRepository
   ){}
 
   async execute({ name, typesIds, eggGroupId } : IRequest): Promise<Pokemon[]> {
-
     if(typesIds !== undefined) {
-      const doesTheseTypesExist = await this.pokemonTypeRepository.doesTheseTypesExist(typesIds);
+      const oneOfTheseTypesDoesntExist =
+        (await this.pokemonTypeRepository.doesTheseTypesExist(typesIds)).some(typeId => !typeId);
       
-      if (!doesTheseTypesExist) {
+      if (oneOfTheseTypesDoesntExist) {
         throw new AppError("One or more specified types does not exist");
+      }
+    }
+
+    if(eggGroupId !== undefined) {
+      const thisEggGroupDoesntExist =
+        (await this.eggGroupRepository.doesTheseEggGroupsExist([eggGroupId])).some(typeId => !typeId);
+      
+      if (thisEggGroupDoesntExist) {
+        throw new AppError("The specified egg group does not exist");
       }
     }
 

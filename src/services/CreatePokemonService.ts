@@ -1,4 +1,5 @@
 import { AppError } from "errors/AppError";
+import { IEggGroupRepository } from "repositories/IEggGroupRepository";
 import { IPokemonRepository } from "repositories/IPokemonRepository";
 import { IPokemonTypeRepository } from "repositories/IPokemonTypeRepository";
 import { inject, injectable } from "tsyringe";
@@ -10,23 +11,34 @@ class CreatePokemonService {
     private pokemonRepository: IPokemonRepository,
 
     @inject("PokemonTypeRepository")
-    private pokemonTypeRepository: IPokemonTypeRepository
+    private pokemonTypeRepository: IPokemonTypeRepository,
+
+    @inject("EggGroupRepository")
+    private eggGroupRepository: IEggGroupRepository
   ) {}
 
   async execute({ name, weight, typesIds, eggGroupId }: IRequest) {
-    const existingPokemons = await this.pokemonRepository.findByName(name);
+    const pokemonExists = (await this.pokemonRepository.findByName(name)).length > 0;
+
+    const oneOfTheseTypesDoesntExist =
+      (await this.pokemonTypeRepository.doesTheseTypesExist(typesIds)).some(type => !type);
+
+    const thisEggGroupDoesntExist =
+      (await this.eggGroupRepository.doesTheseEggGroupsExist([eggGroupId])).some(type => !type);
 
     if(typesIds.length > 2 || typesIds.length == 0) {
       throw new AppError("A pokemon can have one or two types only");
     }
 
-    const typesExists = await this.pokemonTypeRepository.doesTheseTypesExist(typesIds);
-
-    if (!typesExists) {
+    if (oneOfTheseTypesDoesntExist) {
       throw new AppError("One or more specified types does not exist");
     }
 
-    if (existingPokemons.length > 0) {
+    if (thisEggGroupDoesntExist) {
+      throw new AppError("The informed egg group does not exist");
+    }
+
+    if (pokemonExists) {
       throw new AppError("A pokemon with this name already exists");
     }
 
