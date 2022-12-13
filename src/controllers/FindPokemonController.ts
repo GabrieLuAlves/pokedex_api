@@ -4,7 +4,7 @@ import { container } from "tsyringe";
 
 class FindPokemonController {
   async handle(request: Request, response: Response) {
-    let { name, typesIds, eggGroupId } = request.body;
+    let { name, weight, typesIds, eggGroupId } = request.body;
 
     if(!typesIds) {
       typesIds = []
@@ -12,7 +12,7 @@ class FindPokemonController {
 
     const findPokemonService = container.resolve(FindPokemonService);
 
-    return response.json(await findPokemonService.execute({ name, typesIds, eggGroupId }));
+    return response.json(await findPokemonService.execute({ name, weight, typesIds, eggGroupId }));
   }
 }
 

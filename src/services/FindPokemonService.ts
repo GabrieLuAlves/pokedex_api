@@ -18,7 +18,7 @@ class FindPokemonService {
     private eggGroupRepository: IEggGroupRepository
   ){}
 
-  async execute({ name, typesIds, eggGroupId } : IRequest): Promise<Pokemon[]> {
+  async execute({ name, weight, typesIds, eggGroupId } : IRequest): Promise<Pokemon[]> {
     if(typesIds !== undefined) {
       const oneOfTheseTypesDoesntExist =
         (await this.pokemonTypeRepository.doesTheseTypesExist(typesIds)).some(typeId => !typeId);
@@ -37,12 +37,13 @@ class FindPokemonService {
       }
     }
 
-    return this.pokemonRepository.findByTypeOrEggGroup({ name, typesIds, eggGroupId });
+    return this.pokemonRepository.find({ name, weight, typesIds, eggGroupId });
   }
 }
 
 interface IRequest {
   name: string | undefined;
+  weight: number | undefined;
   typesIds: number[] | undefined;
   eggGroupId: number | undefined;
 };

@@ -1,5 +1,6 @@
 import { AppDataSource } from "database/datasource";
 import { ICreatePokemonDTO } from "dtos/ICreatePokemonDTO";
+import { IFindPokemonsDTO } from "dtos/IFindPokemonsDTO";
 import { IUpdatePokemonDTO } from "dtos/IUpdatePokemonDTO";
 import { EggGroup } from "entities/EggGroup";
 import { Pokemon } from "entities/Pokemon";
@@ -80,7 +81,7 @@ WHERE
 	pokemons.id IN (SELECT pokemons.id FROM pokemons, pokemons_types WHERE pokemons.id = pokemons_types.pokemon_id AND pokemons_types.type_id = 3)
 */
 
-  async findByTypeOrEggGroup({ typesIds, eggGroupId }: { typesIds: number[] | undefined, eggGroupId: number | undefined }): Promise<Pokemon[]> {
+  async find({ name, weight, typesIds, eggGroupId }: IFindPokemonsDTO): Promise<Pokemon[]> {
     const query = AppDataSource
       .createQueryBuilder()
       .from("pokemons", "p")
@@ -94,6 +95,14 @@ WHERE
       .andWhere(`p_t.type_id = ${typeId}`)
       .getQuery()
     
+    if (name !== undefined) {
+      query.andWhere("p.name = :name", { name });
+    }
+
+    if (weight != undefined) {
+      query.andWhere("p.weight = :weight", { weight });
+    }
+
     if (typesIds !== undefined) {
       typesIds.forEach((typeId) => query.andWhere(qb => "p.id IN (" + subQueryGenerator(qb, typeId) + ")"));
     }
