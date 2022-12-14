@@ -134,7 +134,7 @@ WHERE
       .of(id)
       .loadMany();
     
-    await this.pokemonRepository
+    const updateResult = await this.pokemonRepository
       .createQueryBuilder()
       .update(Pokemon)
       .set({
@@ -149,7 +149,9 @@ WHERE
       .createQueryBuilder()
       .relation(Pokemon, "types")
       .of(id)
-      .addAndRemove(newPokemonTypes, oldPokemonTypes)
+      .addAndRemove(newPokemonTypes, oldPokemonTypes);
+    
+    console.log(updateResult.raw);
   }
 }
 
