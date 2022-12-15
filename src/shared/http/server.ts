@@ -8,28 +8,30 @@ import "database/datasource";
 
 import { router } from "./routes";
 import { AppError } from "errors/AppError";
+import cors from "cors";
 
-const app = express()
+const app = express();
 
+app.use(cors())
 app.use(express.json());
 app.use(router);
 
 app.use(
   (err: Error, request: Request, response: Response, next: NextFunction) => {
-    if(err instanceof AppError) {
+    if (err instanceof AppError) {
       return response.status(err.status).json({
-        message: err.message
+        message: err.message,
       });
     }
 
     console.log(err);
 
     return response.status(500).json({
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 );
 
 app.listen(3333, "localhost", () => {
-  console.log(`Server listening at: http://localhost:3333`)
+  console.log(`Server listening at: http://localhost:3333`);
 });
