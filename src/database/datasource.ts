@@ -11,11 +11,11 @@ import { CreateEggGroupTable1670788138938 } from "./migrations/1670788138938-Cre
 
 const AppDataSource = new DataSource({
     type: "postgres",
-    host: "172.17.0.2",
+    host: "0.0.0.0",
     port: 5432,
-    username: "pokedex_api",
-    database: "pokedex_api",
-    password: "docker",
+    username: "pokemon_api",
+    database: "pokemon_api",
+    password: "bestpassword",
     entities: [
       Pokemon,
       PokemonType,
@@ -27,9 +27,10 @@ const AppDataSource = new DataSource({
       CreatePokemonTypeRelationship1670764321801,
       CreateEggGroupTable1670788138938
     ],
-    logging: ["query"]
-});
-
+    logging: ["query"],
+    synchronize: true
+  });
+  
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")

@@ -15,7 +15,7 @@ export class CreatePokemonTypesTable1670763538045 implements MigrationInterface 
           {
             name: "type",
             type: "varchar",
-            isNullable: false
+            isNullable: true
           },
         ]
       }));

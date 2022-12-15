@@ -6,7 +6,7 @@ class PokemonType {
   @PrimaryGeneratedColumn({ name: "id", type: "int" })
   id: number;
 
-  @Column({ name: "type", type: "varchar", length: 30 })
+  @Column({ name: "type", type: "varchar" })
   type: string;
 
   @ManyToMany(() => Pokemon, pokemon => pokemon.types)
