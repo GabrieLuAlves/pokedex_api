@@ -16,7 +16,7 @@ class PokemonTypeRepositoryTypeorm implements IPokemonTypeRepository{
         .getMany();
     
     const pokemonTypesIds = pokemonType.map(p => p.id);
-
+    console.log("types", typesIds)
     return typesIds.map(typeId => pokemonTypesIds.includes(typeId));
   }
 
