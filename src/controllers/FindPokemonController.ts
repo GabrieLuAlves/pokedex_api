@@ -19,9 +19,15 @@ class FindPokemonController {
     }
 
     const findPokemonService = container.resolve(FindPokemonService);
-
-    return response.json(await findPokemonService.execute(params));
+    
+    const pokemonList = await findPokemonService.execute(params);
+    const pokemonListSortedById = pokemonList.sort((a, b) => {
+      if (a.id > b.id) return 1;
+      if (a.id < b.id) return -1;
+    });
+    return response.json(pokemonListSortedById);
   }
 }
 
 export { FindPokemonController };
+
