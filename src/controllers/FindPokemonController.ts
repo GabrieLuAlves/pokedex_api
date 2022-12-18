@@ -1,19 +1,33 @@
 import { Request, Response } from "express";
 import { FindPokemonService } from "services/FindPokemonService";
 import { container } from "tsyringe";
+import { parseQueryParams } from "utils";
 
 class FindPokemonController {
   async handle(request: Request, response: Response) {
-    let { name, weight, typesIds, eggGroupId } = request.body;
+    let { name, weight, typesIds, eggGroupId } = request.query;
 
-    if(!typesIds) {
-      typesIds = []
+    const params = {
+      name: parseQueryParams(name),
+      weight: parseQueryParams(weight),
+      typesIds: parseQueryParams(typesIds),
+      eggGroupId: parseQueryParams(eggGroupId),
+    };
+
+    if (!typesIds) {
+      typesIds = [];
     }
 
     const findPokemonService = container.resolve(FindPokemonService);
-
-    return response.json(await findPokemonService.execute({ name, weight, typesIds, eggGroupId }));
+    
+    const pokemonList = await findPokemonService.execute(params);
+    const pokemonListSortedById = pokemonList.sort((a, b) => {
+      if (a.id > b.id) return 1;
+      if (a.id < b.id) return -1;
+    });
+    return response.json(pokemonListSortedById);
   }
 }
 
 export { FindPokemonController };
+

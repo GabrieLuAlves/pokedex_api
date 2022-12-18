@@ -18,8 +18,6 @@ class UpdatePokemonService {
   ) {}
 
   async execute({ id, name, weight, typesIds, eggGroupId } : IRequest) {
-    const pokemonDoesntExist = (await this.pokemonRepository.findByName(name)).length == 0;
-
     const oneOfTheseTypesDoesntExist =
       (await this.pokemonTypeRepository.doesTheseTypesExist(typesIds)).some(type => !type);
 
@@ -36,10 +34,6 @@ class UpdatePokemonService {
 
     if (thisEggGroupDoesntExist) {
       throw new AppError("The informed egg group does not exist");
-    }
-
-    if (pokemonDoesntExist) {
-      throw new AppError("The specified id does not correspond to any existing pokemon");
     }
 
     await this.pokemonRepository.update({ id, name, weight, typesIds, eggGroupId })
